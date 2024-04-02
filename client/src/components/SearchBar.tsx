@@ -61,7 +61,7 @@ export const InputBar = () => {
     }
 
     return <div className="flex justify-center m-5">
-        <div className="flex flex-col items-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-center space-x-4">
             <select
                 value={filterValues.domain}
                 onChange={(e) => handleDomainSelection(e.target.value)}
