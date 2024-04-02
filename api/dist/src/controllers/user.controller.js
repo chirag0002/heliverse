@@ -134,16 +134,15 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield db_1.User.findOne({ id: req.params.id });
         if (!user)
             return res.status(404).json({ message: 'User not found' });
-        const teams = yield db_1.Team.find({ "admin.email": req.user.email });
-        if (!teams.length || user.email === req.user.email) {
+        const teams = yield db_1.Team.find({ 'admin.email': user.email });
+        if (!teams.length) {
             yield db_1.User.deleteOne({ id: req.params.id });
-            res.status(200).json({
+            return res.status(200).json({
                 message: 'User deleted'
             });
         }
-        yield Promise.all(teams.map((team) => __awaiter(void 0, void 0, void 0, function* () {
-            yield team.remove();
-        })));
+        yield db_1.Team.deleteMany({ 'admin.email': user.email });
+        yield db_1.User.deleteOne({ id: req.params.id });
         res.status(200).json({
             message: 'User and associated teams deleted'
         });

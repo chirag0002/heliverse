@@ -131,20 +131,19 @@ export const deleteUser = async (req: Request, res: Response) => {
     try {
         const user = await User.findOne({ id: req.params.id })
         if (!user) return res.status(404).json({ message: 'User not found' })
+        
+        const teams = await Team.find({'admin.email': user.email})
 
-        const teams = await Team.find({"admin.email" : req.user.email})
-
-        if (!teams.length || user.email === req.user.email) {
+        if (!teams.length) {
             await User.deleteOne({ id: req.params.id })
 
-            res.status(200).json({
+            return res.status(200).json({
                 message: 'User deleted'
             });
         }
 
-        await Promise.all(teams.map(async (team:any) => {
-            await team.remove();
-        }));
+        await Team.deleteMany({'admin.email': user.email});
+        await User.deleteOne({ id: req.params.id })
 
         res.status(200).json({
             message: 'User and associated teams deleted'
