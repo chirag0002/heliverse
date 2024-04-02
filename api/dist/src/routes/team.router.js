@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.app = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const team_controller_1 = require("../controllers/team.controller");
+exports.app = (0, express_1.Router)();
+exports.app.post('/', auth_middleware_1.auth, team_controller_1.createTeam);
+exports.app.get('/', auth_middleware_1.auth, team_controller_1.getMyTeams);
+exports.app.put('/:teamId/add-users', auth_middleware_1.auth, team_controller_1.addUser);
+exports.app.put('/:teamId/remove-users', auth_middleware_1.auth, team_controller_1.removeUser);
+exports.app.get('/:teamId', team_controller_1.getTeam);
+exports.app.delete('/:teamId', auth_middleware_1.auth, team_controller_1.deleteTeam);
